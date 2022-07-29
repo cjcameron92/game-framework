@@ -1,10 +1,12 @@
 package com.games.api;
 
+import me.lucko.helper.text3.Text;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Consumer;
 
 public interface Match {
 
@@ -18,6 +20,18 @@ public interface Match {
 
     default int getSize() {
         return getPlayers().size();
+    }
+
+    default void msg(@NotNull String... lines) {
+        getPlayers().forEach(player -> {
+            for (String str : lines) {
+                player.sendMessage(Text.colorize(str));
+            }
+        });
+    }
+
+    default void forEach(@NotNull Consumer<Player> consumer) {
+        getPlayers().forEach(consumer);
     }
 
     static @NotNull Match newMatch() {

@@ -1,0 +1,5 @@
+main: gg.habibi.game.spleef.plugin.SpleefPlugin
+version: 1.0
+name: game-spleef
+api-version: 1.13
+depend: [helper, game-server]

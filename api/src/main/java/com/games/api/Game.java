@@ -14,7 +14,7 @@ import java.util.List;
  *
  * {@inheritDoc}
  */
-public interface Game<X extends Arena, Y extends Match<?>, Z extends Phase> extends GameData {
+public interface Game<X extends Arena, Y extends Match, Z extends Phase> extends GameData {
 
     /**
      * Function to get the arena

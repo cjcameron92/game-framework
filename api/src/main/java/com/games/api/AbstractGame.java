@@ -1,15 +1,20 @@
 package com.games.api;
 
+import com.google.gson.JsonElement;
 import gg.habibi.game.api.GameApi;
 import gg.habibi.game.api.ServerData;
 import me.lucko.helper.Services;
+import me.lucko.helper.gson.JsonBuilder;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
-public abstract class AbstractGame<X extends Arena, Y extends Match<?>, Z extends Phase> implements Game<X, Y, Z> {
+public abstract class AbstractGame<X extends Arena, Y extends Match, Z extends Phase> implements Game<X, Y, Z> {
 
+    private final UUID uuid;
     private final GameApi gameApi;
 
     protected final X arena;
@@ -22,7 +27,8 @@ public abstract class AbstractGame<X extends Arena, Y extends Match<?>, Z extend
     private ServerData serverData;
 
     @SafeVarargs
-    public AbstractGame(X arena, Y match, Z... phases) {
+    public AbstractGame(ServerData serverData, X arena, Y match, Z... phases) {
+        this.uuid = UUID.randomUUID();
         this.gameApi = Services.load(GameApi.class);
         this.arena = arena;
         this.match = match;
@@ -63,6 +69,10 @@ public abstract class AbstractGame<X extends Arena, Y extends Match<?>, Z extend
         this.disabled = runnable;
     }
 
+    protected void addPhases(@NotNull Z... phases) {
+        this.phases.addAll(List.of(phases));
+    }
+
     @NotNull @Override public X getArena() {
         return arena;
     }
@@ -81,6 +91,7 @@ public abstract class AbstractGame<X extends Arena, Y extends Match<?>, Z extend
 
     @Override public void setStarted(boolean started) {
         this.started = started;
+        gameApi.updateGame(this);
     }
 
     @Override public boolean hasStarted() {
@@ -93,5 +104,20 @@ public abstract class AbstractGame<X extends Arena, Y extends Match<?>, Z extend
 
     @Override public int getMaxPlayers() {
         return 2;
+    }
+
+
+    @Nonnull @Override public JsonElement serialize() {
+        return JsonBuilder.object()
+                .add("id", getId())
+                .add("serverData", serverData.serialize())
+                .add("maxPlayers", getMaxPlayers())
+                .add("players", match.getSize())
+                .add("started", started)
+                .build();
+    }
+
+    @Nonnull @Override public String getId() {
+        return uuid.toString();
     }
 }
