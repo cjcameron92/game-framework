@@ -1,15 +1,18 @@
 package com.games.api;
 
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public interface Match<Type> {
+public interface Match {
 
-    @NotNull Set<Type> getPlayers();
+    @NotNull Set<Player> getPlayers();
 
-    default boolean hasPlayer(@NotNull Type type) {
+    void addPlayer(@NotNull Player player);
+
+    default boolean hasPlayer(@NotNull Player type) {
         return getPlayers().parallelStream().anyMatch(it -> it.equals(type));
     }
 
@@ -17,20 +20,25 @@ public interface Match<Type> {
         return getPlayers().size();
     }
 
-    static <T> @NotNull Match<T> newMatch() {
-        return new SimpleMatch<>();
+    static @NotNull Match newMatch() {
+        return new SimpleMatch();
     }
 
-    class SimpleMatch<Type> implements Match<Type> {
+    class SimpleMatch implements Match {
 
-        private final Set<Type> players;
+        private final Set<Player> players;
 
         public SimpleMatch() {
             this.players = new HashSet<>();
         }
 
-        @NotNull @Override public Set<Type> getPlayers() {
+        @NotNull @Override public Set<Player> getPlayers() {
             return players;
+        }
+
+        @Override public void addPlayer(@NotNull Player player) {
+            this.players.add(player);
+
         }
     }
 }

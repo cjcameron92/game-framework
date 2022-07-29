@@ -1,8 +1,9 @@
 package com.games.api;
 
+import me.lucko.helper.terminable.composite.AbstractCompositeTerminable;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class AbstractPhase implements Phase {
+public abstract class AbstractPhase extends AbstractCompositeTerminable implements Phase {
 
     private Runnable enabled, completed;
 

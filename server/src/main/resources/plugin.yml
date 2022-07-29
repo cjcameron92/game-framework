@@ -1,0 +1,4 @@
+main: gg.habibi.game.server.plugin.GameServerPlugin
+version: 1.0
+name: game-server
+depend: [helper, helper-redis, game-core]

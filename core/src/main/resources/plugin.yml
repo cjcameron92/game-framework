@@ -1,0 +1,5 @@
+main: gg.habibi.game.core.plugin.GamePlugin
+version: 1.0
+name: game-lobby
+api-version: 1.13
+depend: [helper, helper-redis, game-core]

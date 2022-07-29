@@ -1,5 +1,6 @@
 package com.games.api;
 
+import gg.habibi.game.api.GameData;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
  *
  * {@inheritDoc}
  */
-public interface Game<X extends Arena, Y extends Match<?>, Z extends Phase> {
+public interface Game<X extends Arena, Y extends Match<?>, Z extends Phase> extends GameData {
 
     /**
      * Function to get the arena
@@ -36,17 +37,4 @@ public interface Game<X extends Arena, Y extends Match<?>, Z extends Phase> {
      */
     @NotNull List<Z> getPhases();
 
-    /**
-     * Function to check if the game is enabled
-     *
-     * @return enabled
-     */
-    boolean isEnabled();
-
-    /**
-     * Method to set the enabled state
-     *
-     * @param b state
-     */
-    void setEnabled(boolean b);
 }

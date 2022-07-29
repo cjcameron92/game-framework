@@ -1,9 +1,11 @@
 package com.games.api;
 
+import me.lucko.helper.Schedulers;
+
 public abstract class AbstractTickablePhase extends AbstractPhase implements TickablePhase {
 
     @Override public void enable() {
         super.enable();
-        /// TODO: 2022-07-27  implement scheduler to tick 
+        Schedulers.sync().runRepeating(this::tick, 20L, 20L).bindWith(this);
     }
 }

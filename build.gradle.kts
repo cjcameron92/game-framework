@@ -11,6 +11,8 @@ java {
 buildscript {
     repositories {
         mavenCentral()
+        mavenLocal()
+        maven("https://papermc.io/repo/repository/maven-public/")
     }
 }
 
@@ -26,5 +28,7 @@ subprojects {
 
     dependencies {
         api("org.jetbrains:annotations:23.0.0")
+        compileOnly("io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT")
+        compileOnly("me.lucko:helper:5.6.10")
     }
 }

@@ -1,5 +1,8 @@
 package com.games.api;
 
+import gg.habibi.game.api.GameApi;
+import gg.habibi.game.api.ServerData;
+import me.lucko.helper.Services;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -7,25 +10,36 @@ import java.util.List;
 
 public abstract class AbstractGame<X extends Arena, Y extends Match<?>, Z extends Phase> implements Game<X, Y, Z> {
 
+    private final GameApi gameApi;
+
     protected final X arena;
     protected final Y match;
     protected final List<Z> phases;
 
-    protected boolean enabled;
+    protected boolean started;
 
-    private Runnable onEnable, onDisable;
+    private Runnable enabled, disabled;
+    private ServerData serverData;
 
     @SafeVarargs
     public AbstractGame(X arena, Y match, Z... phases) {
+        this.gameApi = Services.load(GameApi.class);
         this.arena = arena;
         this.match = match;
         this.phases = new ArrayList<>(List.of(phases));
-        this.enabled = false;
+        this.started = false;
+
+        gameApi.addGame(this);
+        gameApi.updateGame(this);
     }
 
     public void start() {
-        if (enabled) throw new IllegalStateException("This game has already been started!");
-        if (onEnable != null) onEnable.run();
+        if (started) throw new IllegalStateException("This game has already been started!");
+        if (enabled != null) enabled.run();
+
+        started = true;
+        gameApi.updateGame(this);
+
         for (int i = 0; i < phases.size(); i++) {
             final Z phase = phases.get(i);
             final int index = i + 1;
@@ -38,15 +52,15 @@ public abstract class AbstractGame<X extends Arena, Y extends Match<?>, Z extend
     }
 
     public void stop() {
-        if (onDisable != null) onDisable.run();
+        if (disabled != null) disabled.run();
     }
 
     protected void onEnable(Runnable runnable) {
-        this.onEnable = runnable;
+        this.enabled = runnable;
     }
 
     protected void onDisable(Runnable runnable) {
-        this.onDisable = runnable;
+        this.disabled = runnable;
     }
 
     @NotNull @Override public X getArena() {
@@ -61,11 +75,23 @@ public abstract class AbstractGame<X extends Arena, Y extends Match<?>, Z extend
         return phases;
     }
 
-    @Override public boolean isEnabled() {
-        return enabled;
+    @NotNull @Override public ServerData getServerData() {
+        return serverData;
     }
 
-    @Override public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+    @Override public void setStarted(boolean started) {
+        this.started = started;
+    }
+
+    @Override public boolean hasStarted() {
+        return started;
+    }
+
+    @Override public int getPlayers() {
+        return match.getSize();
+    }
+
+    @Override public int getMaxPlayers() {
+        return 2;
     }
 }

@@ -1,11 +1,12 @@
 package com.games.api;
 
+import me.lucko.helper.terminable.composite.CompositeTerminable;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Component for having multi-game phases
  */
-public interface Phase {
+public interface Phase extends CompositeTerminable {
 
     /**
      * To enable the phase
